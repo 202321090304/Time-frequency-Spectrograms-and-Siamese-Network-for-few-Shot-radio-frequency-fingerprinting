@@ -1,12 +1,12 @@
+# Time-frequency Graph and Siamese Network for few-Shot radio frequency fingerprinting
+### 0.Dataset And Environment
+Dataset directory:/disk/datasets/rf_data/newspectrum/UAV/UAVSet/  
+Dataset download link:https://drive.google.com/file/d/1A1f9BHGIkLmXbup9MODZeJtC-3US5rvd/view?usp=sharing  
+Pre-trained model download link:https://drive.google.com/file/d/1wqemE6wSU_d7vJAcfO80IPA6y4h3jZPr/view?usp=sharing  
+Conda dependencies can be found in the environment.yml file.
 
-### 0、数据集
-数据集目录:/disk/datasets/rf_data/newspectrum/UAV/UAVSet/  
-数据集下载地址：https://drive.google.com/file/d/1A1f9BHGIkLmXbup9MODZeJtC-3US5rvd/view?usp=sharing  
-预训练模型下载地址：https://drive.google.com/file/d/1wqemE6wSU_d7vJAcfO80IPA6y4h3jZPr/view?usp=sharing  
-conda依赖见environment.yml文件
-
-### 1、一阶段训练
-通过孪生网络对模型进行预训练
+### 1、Pre-training Stage
+Pre-training the model using the Siamese network
 ```bash
 nohup python new_main_supcon_Generalization.py --batch_size 16 \
   --model CustomCNNmini --method SupCon\
@@ -18,8 +18,8 @@ nohup python new_main_supcon_Generalization.py --batch_size 16 \
   > runlog.txt 2>&1 &  
 ```
 
-### 1.1 降维
-通过tSNE降维方法查看表征训练效果
+### 1.1 Dimensionality Reduction
+Visualize the representation training results using the tSNE dimensionality reduction method
 ```bash
 python main_tSNE.py \
     --model CustomCNNmini \
@@ -31,8 +31,8 @@ python main_tSNE.py \
     --num_workers 8
 ```
 
-### 2.二阶段训练
-在目标数据集上微调，使用10%的数据
+### 2.Fine-tuning Stage
+Fine-tuning on the target dataset using 10% of the data
 ```bash
 nohup python new_main_linear.py --batch_size 32 \
   --model CustomCNNmini \
