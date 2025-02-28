@@ -1,8 +1,8 @@
 
 ### 0、数据集
 数据集目录:/disk/datasets/rf_data/newspectrum/UAV/UAVSet/  
-数据集下载地址：https://drive.google.com/file/d/1A1f9BHGIkLmXbup9MODZeJtC-3US5rvd/view?usp=sharing
-预训练模型下载地址：https://drive.google.com/file/d/1wqemE6wSU_d7vJAcfO80IPA6y4h3jZPr/view?usp=sharing
+数据集下载地址：https://drive.google.com/file/d/1A1f9BHGIkLmXbup9MODZeJtC-3US5rvd/view?usp=sharing  
+预训练模型下载地址：https://drive.google.com/file/d/1wqemE6wSU_d7vJAcfO80IPA6y4h3jZPr/view?usp=sharing  
 conda依赖见environment.yml文件
 
 ### 1、一阶段训练
