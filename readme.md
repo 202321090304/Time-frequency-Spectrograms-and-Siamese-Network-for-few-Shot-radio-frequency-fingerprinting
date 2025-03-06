@@ -1,7 +1,6 @@
 # Time-frequency Graph and Siamese Network for few-Shot radio frequency fingerprinting
 ### 0.Dataset And Environment
 Dataset directory:/disk/datasets/rf_data/newspectrum/UAV/UAVSet/  
-Dataset download link:[https://drive.google.com/file/d/1A1f9BHGIkLmXbup9MODZeJtC-3US5rvd/view?usp=sharing ](https://drive.google.com/file/d/1bN5dEeak0KrSutB9YKIRmkEPPgAIEn61/view?usp=sharing)  
 Pre-trained model download link:https://drive.google.com/file/d/1wqemE6wSU_d7vJAcfO80IPA6y4h3jZPr/view?usp=sharing   
 Conda dependencies can be found in the environment.yml file.
 
