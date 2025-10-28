@@ -8,13 +8,22 @@ from torchvision import transforms
 from rf_dataset import InferenceDataset, SPDataset
 from networks.resnet_big import CustomCNN, CustomCNNmini, sp_LinearClassifier, sp_MLPClassifier
 
+
 class InferenceOptions:
     def __init__(self):
-        self.val_data_folder = '/disk/datasets/rf_data/newspectrum/UAV/secondUAVSet/test'
-        self.encode_ckpt = 'save/newSupCon/sp_models/tranSupCon_sp_CustomCNNmini_lr_0.05_decay_0.0001_bsz_16_temp_0.2_trial_0_cosine/ckpt_epoch_140.pth'
+        # self.val_data_folder = '/disk/datasets/rf_data/newspectrum/UAV/secondUAVSet/test'
+        # self.encode_ckpt = 'save/newSupCon/sp_models/tranSupCon_sp_CustomCNNmini_lr_0.05_decay_0.0001_bsz_16_temp_0.2_trial_0_cosine/ckpt_epoch_140.pth'
+        # self.classifier_ckpt = 'save/SecondStage/sp_models/new_best_classifier_93.73.pth'
+        # self.batch_size = 32
+        # self.num_workers = 8
+        # self.model = 'CustomCNNmini'
+        # self.classifier = 'MLP'
+        # self.mode = 'data'
+        self.val_data_folder = r'E:\RFcode\rf数据集\secondUAVSet\test'
+        self.encode_ckpt = 'save/ckpt_epoch_140.pth'
         self.classifier_ckpt = 'save/SecondStage/sp_models/new_best_classifier_93.73.pth'
-        self.batch_size = 32
-        self.num_workers = 8
+        self.batch_size = 8
+        self.num_workers = 2
         self.model = 'CustomCNNmini'
         self.classifier = 'MLP'
         self.mode = 'data'
@@ -26,19 +35,19 @@ def set_model_for_inference(opt):
         model = CustomCNNmini()
     else:
         raise ValueError(f"Unsupported model: {opt.model}")
-    
+
     if opt.classifier == 'linear':
         classifier = sp_LinearClassifier(num_classes=5)
     elif opt.classifier == 'MLP':
         classifier = sp_MLPClassifier(num_classes=5)
     else:
         raise ValueError(f"Unsupported classifier: {opt.classifier}")
-    
+
     encode_ckpt = torch.load(opt.encode_ckpt, map_location='cpu')
     state_dict = encode_ckpt['model']
     state_dict = {k.replace('module.', ''): v for k, v in state_dict.items()}
     model.load_state_dict(state_dict, strict=False)
-    
+
     classifier_ckpt = torch.load(opt.classifier_ckpt, map_location='cpu')
     classifier.load_state_dict(classifier_ckpt)
 
@@ -125,25 +134,26 @@ def predict(val_loader, model, classifier):
     for class_name, count in prediction_counts.items():
         print(f"类别 '{class_name}' 的预测数量: {count}")
 
-opt = InferenceOptions()
-val_transform = transforms.Compose([
-    transforms.CenterCrop((500, 500)),
-    transforms.ToTensor(),
-])
+if __name__ == '__main__':
+    opt = InferenceOptions()
+    val_transform = transforms.Compose([
+        transforms.CenterCrop((500, 500)),
+        transforms.ToTensor(),
+    ])
 
-if opt.mode =='data':
-    val_dataset = SPDataset(data_dir=opt.val_data_folder, transform=val_transform, data_type='test')
-    val_loader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=opt.batch_size, shuffle=False,
-        num_workers=opt.num_workers, pin_memory=True
-    )
-    model, classifier = set_model_for_inference(opt)
-    inference(val_loader, model, classifier)
-elif opt.mode == 'predict':
-    val_dataset = InferenceDataset(data_dir=opt.val_data_folder, transform=val_transform)
-    val_loader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=opt.batch_size, shuffle=False,
-        num_workers=opt.num_workers, pin_memory=True
-    )
-    model, classifier = set_model_for_inference(opt)
-    predict(val_loader, model, classifier)
+    if opt.mode == 'data':
+        val_dataset = SPDataset(data_dir=opt.val_data_folder, transform=val_transform, data_type='test')
+        val_loader = torch.utils.data.DataLoader(
+            val_dataset, batch_size=opt.batch_size, shuffle=False,
+            num_workers=opt.num_workers, pin_memory=True
+        )
+        model, classifier = set_model_for_inference(opt)
+        inference(val_loader, model, classifier)
+    elif opt.mode == 'predict':
+        val_dataset = InferenceDataset(data_dir=opt.val_data_folder, transform=val_transform)
+        val_loader = torch.utils.data.DataLoader(
+            val_dataset, batch_size=opt.batch_size, shuffle=False,
+            num_workers=opt.num_workers, pin_memory=True
+        )
+        model, classifier = set_model_for_inference(opt)
+        predict(val_loader, model, classifier)
